@@ -30,20 +30,25 @@
     <img src="../assets/comicSpider.jpg" alt width="100%">
     <!-- comic -->
     <v-container fluid grid-list-md>
-      <v-layout row wrap>
-        <v-flex xs12>
-          <v-layout fill-height v-for="comic in comic" :key="comic">
-            <!-- image -->
-            <v-flex>
-              <img
-                :src="comic.thumbnail.path + '/portrait_uncanny.jpg'"
-                alt="comic portrait"
-                height="100%"
-              >
-            </v-flex>
-            <!-- description -->
-            <v-flex></v-flex>
-          </v-layout>
+      <v-layout row fill-height white--text v-for="comic in comic" :key="comic.id">
+        <!-- image -->
+        <v-flex class="xs12 md5">
+          <div v-bind="resizeToColumn" id="contentMobile" class="dark">
+            <div class="headline text-uppercase hidden-sm-and-up">{{comic.title}}</div>
+            <img
+              :src="comic.thumbnail.path + '/portrait_uncanny.jpg'"
+              alt="comic portrait"
+              height="100%"
+            >
+            <div class="hidden-sm-and-up">
+              <p>Published:</p>
+              <p>{{comic.dates[0].date}}</p>
+            </div>
+          </div>
+        </v-flex>
+        <!-- description -->
+        <v-flex class="hidden-sm-and-down md7">
+          <div class="headline text-uppercase">{{comic.title}}</div>
         </v-flex>
       </v-layout>
     </v-container>
@@ -64,7 +69,15 @@ export default {
       "?ts=1&apikey=e3e2eed85560ec86d4db7d4987be2e72&hash=c08b0f4229036475c36fb27705bd8349",
     comic: []
   }),
+  resizeToColumn() {
+    let resize = document.getElementById("contentMobile");
 
+    if (this.$vuetify.breakpoint.smAndDown) {
+      resize.className += "flexColumn";
+    }
+
+    return resize;
+  },
   created() {
     this.getOneComic();
   },
@@ -74,11 +87,24 @@ export default {
         .then(res => res.json())
         .then(data => (this.comic = data.data.results));
     }
+  },
+  computed: {
+    // resizeToColumn() {
+    //   let resize = document.getElementById("contentMobile");
+    //   if (this.$vuetify.breakpoint.smAndDown) {
+    //     resize.classList.add("flexColumn");
+    //   }
+    //   return resize;
+    // }
   }
 };
 </script>
 
 <style>
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
 .height100 {
   height: 100%;
 }
