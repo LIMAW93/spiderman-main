@@ -17,10 +17,10 @@
         <template v-slot:activator="{ on }">
           <v-toolbar-side-icon class="spiderColor" v-on="on"></v-toolbar-side-icon>
         </template>
-        <v-list>
+        <v-list class="black">
           <v-list-tile v-for="(item, index) in items" :key="index">
             <router-link :to="item.path" class="decorationNone">
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title class="spiderColor font-weight-black">{{ item.title }}</v-list-tile-title>
             </router-link>
           </v-list-tile>
         </v-list>
@@ -30,25 +30,60 @@
     <img src="../assets/comicSpider.jpg" alt width="100%">
     <!-- comic -->
     <v-container fluid grid-list-md>
-      <v-layout row fill-height white--text v-for="comic in comic" :key="comic.id">
+      <v-layout row wrap fill-height white--text v-for="info in comic" :key="info.id">
         <!-- image -->
-        <v-flex class="xs12 md5">
-          <div v-bind="resizeToColumn" id="contentMobile" class="dark">
-            <div class="headline text-uppercase hidden-sm-and-up">{{comic.title}}</div>
-            <img
-              :src="comic.thumbnail.path + '/portrait_uncanny.jpg'"
-              alt="comic portrait"
-              height="100%"
-            >
-            <div class="hidden-sm-and-up">
-              <p>Published:</p>
-              <p>{{comic.dates[0].date}}</p>
-            </div>
+        <v-flex class="xs12 md5" :class="{'flexColumn': $vuetify.breakpoint.mdAndDown}">
+          <div class="headline text-xs-center text-uppercase hidden-md-and-up">{{info.title}}</div>
+          <img
+            class="hidden-md-and-up imageContain"
+            :src="info.thumbnail.path + '/portrait_uncanny.jpg'"
+            alt="comic portrait"
+            height="100%"
+          >
+          <img
+            class="hidden-sm-and-down imageContain"
+            :src="info.thumbnail.path + '/detail.jpg'"
+            alt="comic portrait"
+            height="100%"
+          >
+          <!-- mobile hidden md and up description -->
+          <div v-if="info.dates[0]" class="hidden-md-and-up">
+            <p>Published:</p>
+            <p>{{info.dates[0].date}}</p>
           </div>
         </v-flex>
         <!-- description -->
         <v-flex class="hidden-sm-and-down md7">
-          <div class="headline text-uppercase">{{comic.title}}</div>
+          <div class="headline mb-3 text-uppercase">{{info.title}}</div>
+          <div>
+            <div class="flexWrap">
+              <div>
+                <ul v-if="info.dates[0]" class="pl-0" style="list-style-type:none;">
+                  <li>Published:</li>
+                  <li>{{convertDate((info.dates[0].date).toString())}}</li>
+                </ul>
+              </div>
+              <div>
+                <ul v-if="info.pageCount" class="pl-0" style="list-style-type:none;">
+                  <li>Pages:</li>
+                  <li>{{info.pageCount}}</li>
+                </ul>
+              </div>
+              <div>
+                <!-- spacer div -->
+              </div>
+            </div>
+
+            <p v-if="info.creators.items[0]">Creators:</p>
+            <div v-if="info.creators.items[0]">
+              <v-flex v-for="creator in info.creators.items" :key="creator.name">
+                <p>{{creator.name}}({{creator.role}})</p>
+              </v-flex>
+            </div>
+            <p v-if="info.description">{{info.description}}</p>
+            <v-btn v-if="info.urls[1]" :href="info.urls[1].url">BUY</v-btn>
+            <!-- end description -->
+          </div>
         </v-flex>
       </v-layout>
     </v-container>
@@ -69,15 +104,7 @@ export default {
       "?ts=1&apikey=e3e2eed85560ec86d4db7d4987be2e72&hash=c08b0f4229036475c36fb27705bd8349",
     comic: []
   }),
-  resizeToColumn() {
-    let resize = document.getElementById("contentMobile");
 
-    if (this.$vuetify.breakpoint.smAndDown) {
-      resize.className += "flexColumn";
-    }
-
-    return resize;
-  },
   created() {
     this.getOneComic();
   },
@@ -86,21 +113,37 @@ export default {
       fetch(this.url1 + this.id + this.url2)
         .then(res => res.json())
         .then(data => (this.comic = data.data.results));
+    },
+    convertDate(date) {
+      var strArray = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      date = new Date(date);
+      var d = date.getDate();
+      var m = strArray[date.getMonth()];
+      var y = date.getFullYear();
+      return d + " " + m + "," + " " + y;
     }
   },
-  computed: {
-    // resizeToColumn() {
-    //   let resize = document.getElementById("contentMobile");
-    //   if (this.$vuetify.breakpoint.smAndDown) {
-    //     resize.classList.add("flexColumn");
-    //   }
-    //   return resize;
-    // }
-  }
+  computed: {}
 };
 </script>
 
 <style>
+.imageContain {
+  object-fit: contain;
+}
 .flexColumn {
   display: flex;
   flex-direction: column;
@@ -115,5 +158,10 @@ export default {
 .decorationNone {
   text-decoration: none;
   color: black;
+}
+.flexWrap {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 </style>

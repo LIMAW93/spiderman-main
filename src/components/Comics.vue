@@ -17,10 +17,10 @@
         <template v-slot:activator="{ on }">
           <v-toolbar-side-icon class="spiderColor" v-on="on"></v-toolbar-side-icon>
         </template>
-        <v-list>
+        <v-list class="black">
           <v-list-tile v-for="(item, index) in items" :key="index">
             <router-link :to="item.path" class="decorationNone">
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title class="spiderColor font-weight-black">{{ item.title }}</v-list-tile-title>
             </router-link>
           </v-list-tile>
         </v-list>

@@ -17,7 +17,7 @@
         <template v-slot:activator="{ on }">
           <v-toolbar-side-icon class="spiderColor" v-on="on"></v-toolbar-side-icon>
         </template>
-        <v-list>
+        <v-list class="black">
           <router-link
             v-for="(item, index) in items"
             :key="index"
@@ -25,7 +25,7 @@
             class="decorationNone"
           >
             <v-list-tile>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title class="spiderColor font-weight-black">{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </router-link>
         </v-list>
@@ -44,7 +44,7 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-card class="grey darken-4" dark>
-            <v-layout fill-height align-center v-bind="resizeRowToColumn">
+            <v-layout fill-height v-bind="resizeRowToColumn">
               <!-- image -->
               <v-flex class="xs12 md5 mx-2">
                 <img
@@ -72,6 +72,19 @@
       </v-layout>
     </v-container>
     <!-- end bio -->
+
+    <v-footer height="8vh" class="grey darken-4 white--text">
+      <div class="heightLogo ml-3 mr-1">
+        <a href="http://marvel.com" class="height100">
+          <img :src="require('../assets/LogoMarvel.png')" alt="logo marvel" height="100%">
+        </a>
+      </div>
+      <v-spacer></v-spacer>
+      <div
+        align-center
+        class="subheading mr-3"
+      >Data provided by Marvel. &copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
 
     <!-- end content -->
   </v-content>
@@ -105,6 +118,11 @@ export default {
 .height100 {
   height: 100%;
 }
+
+.heightLogo {
+  height: 70%;
+}
+
 .spiderColor {
   color: rgb(193, 29, 6) !important;
 }
