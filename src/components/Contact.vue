@@ -100,7 +100,10 @@ export default {
       firebase
         .database()
         .ref("test")
-        .push(objectToSend);
+        .push(objectToSend)
+        .then(() => {
+          this.text = "";
+        });
     },
     clearMessage() {
       this.text = "";
