@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import OneComic from './components/OneComic.vue'
+import Contact from './components/Contact.vue'
 
 Vue.use(Router)
 
@@ -19,6 +20,11 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './components/Comics.vue')
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: Contact
     },
     {
       path: '/details/:id',

@@ -32,7 +32,7 @@
     <v-container fluid grid-list-md>
       <v-layout row wrap fill-height white--text v-for="info in comic" :key="info.id">
         <!-- image -->
-        <v-flex class="xs12 md5" :class="{'flexColumn': $vuetify.breakpoint.mdAndDown}">
+        <v-flex class="xs12 md5 grow" :class="{'flexColumn': $vuetify.breakpoint.mdAndDown}">
           <div class="headline text-xs-center text-uppercase hidden-md-and-up">{{info.title}}</div>
           <img
             class="hidden-md-and-up imageContain"
@@ -47,16 +47,8 @@
             height="100%"
           >
           <!-- mobile hidden md and up description -->
-          <div v-if="info.dates[0]" class="hidden-md-and-up">
-            <p>Published:</p>
-            <p>{{info.dates[0].date}}</p>
-          </div>
-        </v-flex>
-        <!-- description -->
-        <v-flex class="hidden-sm-and-down md7">
-          <div class="headline mb-3 text-uppercase">{{info.title}}</div>
-          <div>
-            <div class="flexWrap">
+          <div class="hidden-md-and-up">
+            <div class="flexWrapBTW mt-3">
               <div>
                 <ul v-if="info.dates[0]" class="pl-0" style="list-style-type:none;">
                   <li>Published:</li>
@@ -74,19 +66,68 @@
               </div>
             </div>
 
-            <p v-if="info.creators.items[0]">Creators:</p>
-            <div v-if="info.creators.items[0]">
-              <v-flex v-for="creator in info.creators.items" :key="creator.name">
-                <p>{{creator.name}}({{creator.role}})</p>
+            <p class="mt-3" v-if="info.creators.items[0]">Creators:</p>
+            <div class="flexWrap" v-if="info.creators.items[0]">
+              <v-flex class="md4 sm2" v-for="creator in info.creators.items" :key="creator.name">
+                <p>{{creator.name}} ({{creator.role}})</p>
               </v-flex>
             </div>
             <p v-if="info.description">{{info.description}}</p>
-            <v-btn v-if="info.urls[1]" :href="info.urls[1].url">BUY</v-btn>
+            <v-btn v-if="info.urls[1]" :href="info.urls[1].url" target="_blank">BUY</v-btn>
+
+            <!-- end mobile description -->
+          </div>
+        </v-flex>
+
+        <!-- Description -->
+        <v-flex class="hidden-sm-and-down md7 shrink">
+          <div class="headline mb-3 text-uppercase">{{info.title}}</div>
+          <!-- main div -->
+          <div class="subheading">
+            <div class="flexWrapBTW">
+              <div>
+                <ul v-if="info.dates[0]" class="pl-0" style="list-style-type:none;">
+                  <li>Published:</li>
+                  <li>{{convertDate((info.dates[0].date).toString())}}</li>
+                </ul>
+              </div>
+              <div>
+                <ul v-if="info.pageCount" class="pl-0" style="list-style-type:none;">
+                  <li>Pages:</li>
+                  <li>{{info.pageCount}}</li>
+                </ul>
+              </div>
+              <div>
+                <!-- spacer div -->
+              </div>
+            </div>
+
+            <p class="mt-3" v-if="info.creators.items[0]">Creators:</p>
+            <div class="flexWrap" v-if="info.creators.items[0]">
+              <v-flex class="md4 sm2" v-for="creator in info.creators.items" :key="creator.name">
+                <p>{{creator.name}} ({{creator.role}})</p>
+              </v-flex>
+            </div>
+            <p v-if="info.description">{{info.description}}</p>
+            <v-btn v-if="info.urls[1]" :href="info.urls[1].url" target="_blank">BUY</v-btn>
             <!-- end description -->
           </div>
         </v-flex>
       </v-layout>
     </v-container>
+    <!-- footer -->
+    <v-footer height="8vh" class="grey darken-4 white--text">
+      <div class="heightLogo ml-3 mr-1">
+        <a href="http://marvel.com" class="height100">
+          <img :src="require('../assets/LogoMarvel.png')" alt="logo marvel" height="100%">
+        </a>
+      </div>
+      <v-spacer></v-spacer>
+      <div
+        align-center
+        class="subheading mr-3"
+      >Data provided by Marvel. &copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
   </v-content>
 </template>
 
@@ -96,8 +137,8 @@ export default {
   data: () => ({
     items: [
       { title: "Comics", path: "/comics" },
-      { title: "Movies & Series", path: "" },
-      { title: "Videogames", path: "" }
+      { title: "Contact", path: "/contact" }
+      // { title: "Videogames", path: "" }
     ],
     url1: "https://gateway.marvel.com:443/v1/public/comics/",
     url2:
@@ -159,9 +200,13 @@ export default {
   text-decoration: none;
   color: black;
 }
-.flexWrap {
+.flexWrapBTW {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+.flexWrap {
+  display: flex;
   flex-wrap: wrap;
 }
 </style>

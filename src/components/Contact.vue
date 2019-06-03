@@ -18,34 +18,49 @@
           <v-toolbar-side-icon class="spiderColor" v-on="on"></v-toolbar-side-icon>
         </template>
         <v-list class="black">
-          <v-list-tile v-for="(item, index) in items" :key="index">
-            <router-link :to="item.path" class="decorationNone">
+          <router-link
+            v-for="(item, index) in items"
+            :key="index"
+            :to="item.path"
+            class="decorationNone"
+          >
+            <v-list-tile>
               <v-list-tile-title class="spiderColor font-weight-black">{{ item.title }}</v-list-tile-title>
-            </router-link>
-          </v-list-tile>
+            </v-list-tile>
+          </router-link>
         </v-list>
       </v-menu>
     </v-toolbar>
-    <!-- main image -->
-    <img src="../assets/spidermanComicWP.jpg" alt="spiderman Comic Wallpaper" width="100%">
+    <!-- end toolbar -->
+    <v-container>
+      <v-card v-for="message in chat" :key="message.id" class="grey darken-4" dark>
+        <strong>{{message.post.author}}</strong>
+        <p>{{message.post.message}}</p>
+        <p></p>
+      </v-card>
 
-    <!-- comics content -->
-    <v-container grid-list-sm fluid>
-      <v-layout row wrap justify-space-around>
-        <v-flex v-for="comic in spidermanComics" :key="comic.name" xs5 sm2 class="mx-1">
-          <v-card class="grey darken-4" dark :to="'/details/' + comic.id">
-            <v-img :src="comic.thumbnail.path + '/portrait_uncanny.jpg'" height="100%" contain></v-img>
-            <p>{{comic.title}}</p>
-          </v-card>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <v-text-field
+            background-color="grey darken-4"
+            color="rgb(193, 29, 6)"
+            dark
+            v-model="text"
+            :append-outer-icon="text ? 'send' : ''"
+            box
+            clearable
+            label="Message"
+            type="text"
+            @click:append-outer="sendMessage"
+            @click:clear="clearMessage"
+            placeholder="Type here..."
+          ></v-text-field>
         </v-flex>
       </v-layout>
-      <v-layout>
-        <v-btn @click="previous">Previous</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn @click="next">Next</v-btn>
-      </v-layout>
+      <div class="flexCenter">
+        <v-btn @click="login">Login</v-btn>
+      </div>
     </v-container>
-    <!-- end comics -->
     <v-footer height="8vh" class="grey darken-4 white--text">
       <div class="heightLogo ml-3 mr-1">
         <a href="http://marvel.com" class="height100">
@@ -58,13 +73,12 @@
         class="subheading mr-3"
       >Data provided by Marvel. &copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
-    <!-- <img :src="comic.thumbnail.path + '/portrait_incredible.jpg'" width="100%">offset-xs1
-    <p>{{comic.title}}</p>-->
-    <!-- </div> -->
   </v-content>
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   data: () => ({
     items: [
@@ -74,31 +88,44 @@ export default {
     ]
   }),
   methods: {
-    next() {
-      this.$store.dispatch("nextPage");
+    sendMessage() {
+      var name = firebase.auth().currentUser
+        ? firebase.auth().currentUser.displayName
+        : "Anonimo";
+      var objectToSend = {
+        message: this.text,
+        author: name
+      };
+      firebase
+        .database()
+        .ref("test")
+        .push(objectToSend);
     },
-    previous() {
-      this.$store.dispatch("previousPage");
+    clearMessage() {
+      this.text = "";
+    },
+
+    login() {
+      // https://firebase.google.com/docs/auth/web/google-signin
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider);
     }
   },
   computed: {
-    spidermanComics() {
-      return this.$store.getters.getAllSpiderman;
+    chat() {
+      return this.$store.getters.getFullChat;
     }
+  },
+  created() {
+    this.$store.dispatch("getChat");
   }
 };
 </script>
 
 <style>
-.height100 {
-  height: 100%;
-}
-.spiderColor {
-  color: rgb(193, 29, 6) !important;
-}
-
-.decorationNone {
-  text-decoration: none;
-  color: black;
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
