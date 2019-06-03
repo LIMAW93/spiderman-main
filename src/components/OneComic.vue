@@ -118,7 +118,7 @@
     <!-- footer -->
     <v-footer height="8vh" class="grey darken-4 white--text">
       <div class="heightLogo ml-3 mr-1">
-        <a href="http://marvel.com" class="height100">
+        <a href="http://marvel.com" class="height100" target="_blank">
           <img :src="require('../assets/LogoMarvel.png')" alt="logo marvel" height="100%">
         </a>
       </div>
