@@ -85,7 +85,8 @@ export default {
       { title: "Comics", path: "/comics" },
       { title: "Contact", path: "/contact" }
       // { title: "Videogames", path: "" }
-    ]
+    ],
+    text: ""
   }),
   methods: {
     sendMessage() {
